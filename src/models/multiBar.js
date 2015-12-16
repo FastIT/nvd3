@@ -30,6 +30,7 @@ nv.models.multiBar = function() {
         , yRange
         , groupSpacing = 0.1
         , dispatch = d3.dispatch('chartClick', 'elementClick', 'elementDblClick', 'elementMouseover', 'elementMouseout', 'elementMousemove', 'renderEnd')
+        , rangeBandCentreOffset = 0 // For exclusive use by multiChart.
         ;
 
     //============================================================
@@ -132,6 +133,9 @@ nv.models.multiBar = function() {
 
             x.domain(xDomain || d3.merge(seriesData).map(function(d) { return d.x }))
                 .rangeBands(xRange || [0, availableWidth], groupSpacing);
+
+            // This value is exclusively used by multiChart later on to adjust lines and x-axis to align with bars.
+            rangeBandCentreOffset = x.rangeBand() / 2.0 + (groupSpacing * x.rangeBand()); // Verify groupSpacing part later.
 
             y.domain(yDomain || d3.extent(d3.merge(seriesData).map(function(d) {
                 var domain = d.y;
@@ -402,6 +406,7 @@ nv.models.multiBar = function() {
         id:          {get: function(){return id;}, set: function(_){id=_;}},
         hideable:    {get: function(){return hideable;}, set: function(_){hideable=_;}},
         groupSpacing:{get: function(){return groupSpacing;}, set: function(_){groupSpacing=_;}},
+        rangeBandCentreOffset: {get: function() {return rangeBandCentreOffset;}, set: function(_) {rangeBandCentreOffset = _;}},
 
         // options that require extra logic in the setter
         margin: {get: function(){return margin;}, set: function(_){
