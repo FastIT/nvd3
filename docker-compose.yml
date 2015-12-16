@@ -1,0 +1,11 @@
+code:
+  image: busybox:latest
+  volumes:
+    - ./:/src
+
+node:
+  image: node:0.12
+  command: bash
+  working_dir: /src
+  volumes_from:
+    - code
